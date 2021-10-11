@@ -72,11 +72,13 @@ public class AlinkModelTrain {
         PipelineModel model = pipeline.fit(trainSource);
 
         // 保存训练的模型文件
-        model.save(modelPath);
-        // model.save(modelPath,true);
+        // model.save(modelPath);
+        // 覆写训练的模型文件
+        model.save(modelPath,true);
+
         System.out.println("离线批处理训练开始执行 ================================================================");
         BatchOperator.execute();
-    }
 
+    }
 
 }
