@@ -15,8 +15,7 @@ HELP.md
 *.iml
 target
 test
-
-
+*.csv
 
 ### IntelliJ IDEA ###
 .idea
