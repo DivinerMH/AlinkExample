@@ -20,6 +20,7 @@ import java.util.List;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
+
 public class LinearRegTrainReadCSV {
 
     @Test
@@ -42,7 +43,7 @@ public class LinearRegTrainReadCSV {
                 .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
-                //.setSchemaStr("label int , review string")
+                //.setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
                 .setIgnoreFirstLine(true);
 
         System.out.println("数据源配置构建完成 ========================================================================");

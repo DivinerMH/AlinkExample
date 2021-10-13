@@ -1,5 +1,7 @@
 package linksame.com.SimulationTest;
 
+import com.alibaba.alink.operator.batch.BatchOperator;
+import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import com.alibaba.alink.pipeline.PipelineModel;
 
 
@@ -16,8 +18,21 @@ public class AlinkModelApplication {
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.csv";
         // 加载模型文件
         PipelineModel model = PipelineModel.load(modelPath);
+        // 预测文件路径
+        String predictorPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
 
+        CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
+                .setFilePath(predictorPath)
+                .setFieldDelimiter("|")
+                .setSchemaStr("review string")
+                .setIgnoreFirstLine(true);
 
+        model.transform(predictorResource)
+                .select(new String[] {"pred","review"})
+                .firstN(5)
+                .print();
+
+        BatchOperator.execute();
 
 
 /*        KafkaSourceStreamOp kafkaSourceStreamOp = new KafkaSourceStreamOp()

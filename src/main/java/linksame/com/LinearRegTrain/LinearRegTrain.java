@@ -41,7 +41,7 @@ public class LinearRegTrain {
         // String[] schema = new String[]{"f0 int","f1 int","f2 int","f3 int","label int"};
         // TypeInformation<?>[] colTypes = new TypeInformation<?>[]{};
 
-        // 数据处理
+        // 数据处理【内存数据】
         // BatchOperator<?> batchData = new MemSourceBatchOp(dataSource, "f0 int, f1 int, label int");
         BatchOperator <?> batchSource = new MemSourceBatchOp(dataSource,schema);
 

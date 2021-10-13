@@ -20,7 +20,7 @@ import com.alibaba.alink.pipeline.nlp.StopWordsRemover;
  * @Date: 2021/9/3 17:47
  */
 
-public class AlinkModelTrain2 {
+public class AlinkModelTrain3 {
 
     public static void main(String[] args) throws Exception {
         System.out.println("开始构建离线批处理训练执行环境 =============================================================");
@@ -30,7 +30,7 @@ public class AlinkModelTrain2 {
         // 训练文件路径 = 静态资源路径+文件目录路径
         String train_path = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
         // 预测文件路径
-        String train_path_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
+        String train_path_3 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train3.txt";
 
         // 训练资源
         CsvSourceBatchOp trainSource = new CsvSourceBatchOp()
@@ -41,9 +41,9 @@ public class AlinkModelTrain2 {
 
         // 训练资源2
         CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
-                .setFilePath(train_path_2)
+                .setFilePath(train_path_3)
                 .setFieldDelimiter("|")
-                .setSchemaStr("label int , review string")
+                .setSchemaStr("review string")
                 .setIgnoreFirstLine(true);
 
         // 选择5条数据打印显示出来
@@ -83,7 +83,7 @@ public class AlinkModelTrain2 {
 
         // 使用 model 可以对批式/流式数据进行预测，都是调用model的transform()方法。
         model.transform(predictorResource)
-                .select(new String[] {"pred", "label", "review"})
+                .select(new String[] {"pred","review"})
                 .firstN(10)
                 .print();
     }

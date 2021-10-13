@@ -40,7 +40,7 @@ public class LinearRegTrainLoadModel {
         /*CsvSinkBatchOp linearRegPredictModel = new CsvSinkBatchOp()
                 .setFilePath(modelPath);*/
 
-        CsvSourceBatchOp linearRegPredictModel = new CsvSourceBatchOp()
+        CsvSourceBatchOp model = new CsvSourceBatchOp()
                 .setFilePath(modelPath)
                 .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int");
 
@@ -52,8 +52,7 @@ public class LinearRegTrainLoadModel {
                 .setPredictionCol("pred");
 
         // 线性回归 预测
-        BatchOperator <?> result = predictor
-                .linkFrom(linearRegPredictModel, predictorSource);
+        BatchOperator <?> result = predictor.linkFrom(model, predictorSource);
 
         System.out.println("预测结果数据 =============================================================================");
 

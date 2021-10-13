@@ -29,22 +29,24 @@ public class LinearRegTrainReadCSV2 {
         // 格式
         String schema = "f0 int,f1 int,f2 int,f3 int,label int";
 
+        // 特征值
+        String[] featureCols = new String[]{"f0", "f1", "f2", "f3"};
+
         // 训练资源
         BatchOperator <?> trainSource = new CsvSourceBatchOp()
                 .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
-                //.setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
 
         System.out.println("数据源配置构建完成 ========================================================================");
 
-        // 打印前5天数据源信息 [trainSource.print().firstN(5) 限制条件会在生效前完成打印;]
+        // 打印前5天数据源信息
         trainSource.firstN(5).print();
 
         // 线性回归算法 初始化
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
-                .setFeatureCols("f0", "f1", "f2", "f3")
+                .setFeatureCols(featureCols)
                 .setLabelCol("label")
                 .linkFrom(trainSource);
 
