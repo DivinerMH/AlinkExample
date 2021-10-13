@@ -45,16 +45,16 @@ public class LinearRegTrain {
         // BatchOperator<?> batchData = new MemSourceBatchOp(dataSource, "f0 int, f1 int, label int");
         BatchOperator <?> batchSource = new MemSourceBatchOp(dataSource,schema);
 
-        // 线性回归算法配置
+        // 线性回归算法 初始化
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
                 .setFeatureCols("f0", "f1", "f2", "f3")
                 .setLabelCol("label");
         BatchOperator model = batchSource.link(lr);
 
-        // 线性回归预测初始化
+        // 线性回归 预测初始化
         BatchOperator <?> predictor = new LinearRegPredictBatchOp()
                 .setPredictionCol("pred");
-        // 线性回归预测
+        // 线性回归 预测
         predictor.linkFrom(model, batchSource).print();
     }
 

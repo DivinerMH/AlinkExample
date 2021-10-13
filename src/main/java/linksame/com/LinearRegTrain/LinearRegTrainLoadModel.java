@@ -27,31 +27,37 @@ public class LinearRegTrainLoadModel {
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel.csv";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
-        String trainPath_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain3.txt";
+        String trainPath_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain2.txt";
 
         // 格式
-        String schema = "f0 int,f1 int,f2 int,f3 int,label int";
+        String schema = "f0 int,f1 int,f2 int,f3 int";
 
-        // 预测资源
-        BatchOperator <?> trainSource = new CsvSourceBatchOp()
+        // 预测数据源
+        BatchOperator <?> predictorSource = new CsvSourceBatchOp()
                 .setFilePath(trainPath_2)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
                 .setIgnoreFirstLine(true);
 
         // 加载模型文件
-        CsvSinkBatchOp linearRegPredictModel = new CsvSinkBatchOp()
+        /*CsvSinkBatchOp linearRegPredictModel = new CsvSinkBatchOp()
+                .setFilePath(modelPath);*/
+
+        CsvSourceBatchOp linearRegPredictModel = new CsvSourceBatchOp()
                 .setFilePath(modelPath);
 
         System.out.println("开始执行线性回归预测 ======================================================================");
 
-        // 线性回归预测初始化
+        // 线性回归 预测初始化
         BatchOperator <?> predictor = new LinearRegPredictBatchOp()
                 .setPredictionCol("pred");
-        // 线性回归预测
-        BatchOperator <?> o = predictor.linkFrom(linearRegPredictModel, trainSource);
+
         System.out.println("预测结果数据 =============================================================================");
-        o.print();
+
+        // 线性回归 预测
+        BatchOperator <?> result = predictor
+                .linkFrom(linearRegPredictModel, predictorSource)
+                .print();
     }
 
 }
