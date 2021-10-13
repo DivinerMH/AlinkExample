@@ -3,13 +3,15 @@ package linksame.com.LinearRegTrain;
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
+import com.alibaba.alink.operator.batch.sink.CsvSinkBatchOp;
+import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import com.alibaba.alink.operator.batch.source.MemSourceBatchOp;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.types.Row;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 测试线性回归三元一次方程
@@ -20,10 +22,13 @@ import java.util.List;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrain {
+public class LinearRegTrain2 {
 
     @Test
     public void LinearRegTrainModelTrain() throws Exception {
+
+        String trainFilePath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/train/" + UUID.randomUUID().toString() + ".csv";
+        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/" + UUID.randomUUID().toString() + ".csv";
 
         // 构建训练数据
         List<Row> dataSource = Arrays.asList(
@@ -59,6 +64,54 @@ public class LinearRegTrain {
                 // .select(new String[] {"f0", "f1", "f2", "f3", "pred"})
                 // .firstN(5)
                 .print();
+
+        // 结果集保存至Csv文件
+        CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
+                .setFilePath(trainFilePath);
+                // .linkFrom(predictor);
+        predictor.link(csvSink);
+
+        // 保存模型
+        CsvSinkBatchOp csvSinkModel = new CsvSinkBatchOp()
+                .setFilePath(trainModelPath);
+                //.linkFrom(model);
+        model.link(csvSinkModel);
+
+        // 批处理执行（不加此行代码，当前情景，保存文件步骤会无法执行...）
+        BatchOperator.execute();
+    }
+
+    @Test
+    public void LinearRegTrainModelPredictor() throws Exception {
+        // 模型文件路径
+        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/e2068056-b512-499f-bca7-45d6c6e47157.csv";
+
+        String schemaStr = "f0 int,f1 int,f2 int,f3 int";
+
+        // 加载模型
+        CsvSourceBatchOp csvSourceModel = new CsvSourceBatchOp()
+                .setFilePath(trainModelPath)
+                .setSchemaStr(schemaStr);
+
+        // 测试数据
+        List<Row> dataSource = Arrays.asList(
+                Row.of(7, 1, 5, 9),
+                Row.of(3, 8, 1, 9)
+        );
+        String[] schema = new String[]{"f0", "f1", "f2", "f3"};
+        BatchOperator <?> batchSource = new MemSourceBatchOp(dataSource,schema);
+
+        // 预测初始化
+        BatchOperator <?> predictor = new LinearRegPredictBatchOp()
+                .setPredictionCol("pred");
+
+        // 预测
+        BatchOperator<?> resultOp = predictor.linkFrom(csvSourceModel, batchSource);
+
+        // 预测结果 打印
+        resultOp.print();
+
+        // BatchOperator.execute();
     }
 
 }

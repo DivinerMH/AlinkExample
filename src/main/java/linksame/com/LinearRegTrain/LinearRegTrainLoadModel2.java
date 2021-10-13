@@ -1,12 +1,8 @@
 package linksame.com.LinearRegTrain;
 
 import com.alibaba.alink.operator.batch.BatchOperator;
-import com.alibaba.alink.operator.batch.classification.LogisticRegressionTrainBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
-import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
-import com.alibaba.alink.operator.batch.sink.CsvSinkBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
-import com.alibaba.alink.pipeline.PipelineModel;
 import org.junit.Test;
 
 /**
@@ -18,12 +14,10 @@ import org.junit.Test;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrainLoadModel {
+public class LinearRegTrainLoadModel2 {
 
     @Test
     public void LinearRegTrainBatchOpTest() throws Exception {
-
-
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel1csv";

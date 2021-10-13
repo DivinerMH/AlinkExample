@@ -19,7 +19,7 @@ public class AlinkModelApplication {
         // 加载模型文件
         PipelineModel model = PipelineModel.load(modelPath);
         // 预测文件路径
-        String predictorPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
+        String predictorPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train3.txt";
 
         CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
                 .setFilePath(predictorPath)
@@ -32,30 +32,8 @@ public class AlinkModelApplication {
                 .firstN(5)
                 .print();
 
-        BatchOperator.execute();
+        // BatchOperator.execute();
 
-
-/*        KafkaSourceStreamOp kafkaSourceStreamOp = new KafkaSourceStreamOp()
-                .setBootstrapServers("127.0.0.1:9092")
-                .setStartupMode("latest")
-                .setGroupId("test")
-                .setTopic("sentiment");
-
-        StreamOperator data = kafkaSourceStreamOp
-                .link(
-                        new JsonValueStreamOp()
-                                .setSelectedCol("message")
-                                .setOutputCols(new String[]{"review","user_id", "role_name", "role_id"})
-                                .setJsonPath(new String[]{"chat_content", "user_id", "role_name", "role_id"})
-                );
-
-        PipelineModel pipelineModel = PipelineModel.load(modelPath);
-
-        pipelineModel.transform(data)
-                .select(new String[]{"review", "user_id", "role_name", "role_id","pred"})
-                .print();
-        StreamOperator.execute();*/
     }
-
 
 }
