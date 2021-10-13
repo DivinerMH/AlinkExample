@@ -1,6 +1,5 @@
-package linksame.com.simulationTest;
+package linksame.com.SimulationTest;
 
-import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import com.alibaba.alink.pipeline.Pipeline;
 import com.alibaba.alink.pipeline.PipelineModel;
@@ -21,24 +20,29 @@ import com.alibaba.alink.pipeline.nlp.StopWordsRemover;
  * @Date: 2021/9/3 17:47
  */
 
-public class AlinkModelTrain {
+public class AlinkModelTrain2 {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("开始构建离线批处理训练执行环境 =========================================================");
+        System.out.println("开始构建离线批处理训练执行环境 =============================================================");
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.csv";
         // 训练文件路径 = 静态资源路径+文件目录路径
         String train_path = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
-
-        String schema = "label int , review string";
+        String train_path_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
 
         // 训练资源
         CsvSourceBatchOp trainSource = new CsvSourceBatchOp()
                 .setFilePath(train_path)
                 .setFieldDelimiter("|")
-                .setSchemaStr(schema)
-                //.setSchemaStr("label int , review string")
+                .setSchemaStr("label int , review string")
+                .setIgnoreFirstLine(true);
+
+        // 训练资源2
+        CsvSourceBatchOp trainSource2 = new CsvSourceBatchOp()
+                .setFilePath(train_path_2)
+                .setFieldDelimiter("|")
+                .setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
 
         // 选择5条数据打印显示出来
@@ -74,14 +78,19 @@ public class AlinkModelTrain {
         // 通过 Pipeline 的 fit()方法，可以得到整个流程的模型（PipelineModel），记作变量 model
         PipelineModel model = pipeline.fit(trainSource);
 
-        // 保存训练的模型文件
-        model.save(modelPath);
-        // 覆写训练的模型文件（Alink 1.1.0 前 无该方法，Alink 1.3.0 后有该方法）
-        // model.save(modelPath,true);
+        System.out.println("加载模型执行预测 ==========================================================================");
 
-        System.out.println("离线批处理训练开始执行 ================================================================");
-        BatchOperator.execute();
-
+        // 使用 model 可以对批式/流式数据进行预测，都是调用model的transform()方法。
+        model.transform(trainSource2)
+                .select(new String[] {"pred", "label", "review"})
+                .firstN(10)
+                .print();
     }
+
+
+
+
+
+
 
 }

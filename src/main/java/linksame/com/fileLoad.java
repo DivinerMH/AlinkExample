@@ -1,4 +1,4 @@
-package linksame.com.simulationTest;
+package linksame.com;
 
 import org.junit.Test;
 import org.springframework.core.io.FileSystemResource;

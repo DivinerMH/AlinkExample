@@ -1,4 +1,4 @@
-package linksame.com.simulationTest;
+package linksame.com.KMeans;
 
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;

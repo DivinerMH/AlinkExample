@@ -1,4 +1,4 @@
-package linksame.com.simulationTest;
+package linksame.com.SimulationTest;
 
 import com.alibaba.alink.pipeline.PipelineModel;
 
@@ -17,7 +17,7 @@ public class AlinkModelApplication {
         // 加载模型文件
         PipelineModel model = PipelineModel.load(modelPath);
 
-        // model.
+
 
 
 /*        KafkaSourceStreamOp kafkaSourceStreamOp = new KafkaSourceStreamOp()

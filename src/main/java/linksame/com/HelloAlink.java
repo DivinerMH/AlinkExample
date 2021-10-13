@@ -1,4 +1,4 @@
-package linksame.com.simulationTest;
+package linksame.com;
 
 /**
  * @Author: menghuan
