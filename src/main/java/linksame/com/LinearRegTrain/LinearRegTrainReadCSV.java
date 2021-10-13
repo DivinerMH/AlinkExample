@@ -34,6 +34,9 @@ public class LinearRegTrainReadCSV {
         // 格式
         String schema = "f0 int,f1 int,f2 int,f3 int,label int";
 
+        // 特征值
+        String[] featureCols = new String[]{"f0", "f1", "f2", "f3"};
+
         // 训练资源
         BatchOperator <?> trainSource = new CsvSourceBatchOp()
                 .setFilePath(trainPath)
@@ -49,7 +52,8 @@ public class LinearRegTrainReadCSV {
 
         // 线性回归算法配置
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
-                .setFeatureCols("f0", "f1", "f2", "f3")
+                //.setFeatureCols("f0", "f1", "f2", "f3")
+                .setFeatureCols(featureCols)
                 .setLabelCol("label");
 
         // 批处理操作

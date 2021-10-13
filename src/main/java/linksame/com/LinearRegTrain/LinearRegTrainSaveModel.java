@@ -45,11 +45,11 @@ public class LinearRegTrainSaveModel {
 
         // 线性回归算法 初始化
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
-                .setFeatureCols("f0", "f1", "f2", "f3")
+                .setFeatureCols("f0","f1","f2","f3")
                 .setLabelCol("label");
 
-        // 批处理操作
-        BatchOperator <?> model = trainSource.link(lr);
+        // 批处理操作( 数据 link 算法)
+        BatchOperator model = trainSource.link(lr);
 
         // 保存模型：训练模型写入CSV文件【允许重写】
         CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
