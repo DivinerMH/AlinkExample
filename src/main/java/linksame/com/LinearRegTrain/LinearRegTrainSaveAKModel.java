@@ -2,7 +2,7 @@ package linksame.com.LinearRegTrain;
 
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
-import com.alibaba.alink.operator.batch.sink.CsvSinkBatchOp;
+import com.alibaba.alink.operator.batch.sink.AkSinkBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class LinearRegTrainSaveAKModel {
     public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel2.csv";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel.ak";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
@@ -48,7 +48,7 @@ public class LinearRegTrainSaveAKModel {
                 .linkFrom(trainSource);
 
         // 保存模型：训练模型写入CSV文件【允许重写】
-        CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
+        AkSinkBatchOp akSinkBatchOp = new AkSinkBatchOp()
                 .setFilePath(modelPath)
                 .setOverwriteSink(true)
                 .linkFrom(lr);

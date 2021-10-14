@@ -16,6 +16,7 @@ HELP.md
 target
 test
 *.csv
+*.ak
 
 ### IntelliJ IDEA ###
 .idea
