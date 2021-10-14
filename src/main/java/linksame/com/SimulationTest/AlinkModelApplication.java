@@ -14,25 +14,23 @@ public class AlinkModelApplication {
 
     public static void main(String[] args) throws Exception {
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.csv";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.ak";
         // 加载模型文件
         PipelineModel model = PipelineModel.load(modelPath);
+
         // 预测文件路径
         String predictorPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train3.txt";
-
+        // 预测数据 初始化
         CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
                 .setFilePath(predictorPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr("review string")
                 .setIgnoreFirstLine(true);
-
+        // 模型预测
         model.transform(predictorResource)
                 .select(new String[] {"pred","review"})
                 .firstN(5)
                 .print();
-
-        // BatchOperator.execute();
-
     }
 
 }

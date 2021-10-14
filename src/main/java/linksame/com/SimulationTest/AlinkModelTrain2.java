@@ -23,25 +23,26 @@ import com.alibaba.alink.pipeline.nlp.StopWordsRemover;
 public class AlinkModelTrain2 {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("开始构建离线批处理训练执行环境 =============================================================");
+
+        System.out.println("开始准备离线训练配置信息 ==================================================================");
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.csv";
         // 训练文件路径 = 静态资源路径+文件目录路径
-        String train_path = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
+        String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
         // 预测文件路径
-        String train_path_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
+        String trainPath2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train2.txt";
 
-        // 训练资源
+        // 训练数据源
         CsvSourceBatchOp trainSource = new CsvSourceBatchOp()
-                .setFilePath(train_path)
+                .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
 
-        // 训练资源2
+        // 预测数据源
         CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
-                .setFilePath(train_path_2)
+                .setFilePath(trainPath2)
                 .setFieldDelimiter("|")
                 .setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
@@ -83,15 +84,10 @@ public class AlinkModelTrain2 {
 
         // 使用 model 可以对批式/流式数据进行预测，都是调用model的transform()方法。
         model.transform(predictorResource)
+                // select 可控制最终结果打印的数据列
                 .select(new String[] {"pred", "label", "review"})
                 .firstN(10)
                 .print();
     }
-
-
-
-
-
-
 
 }

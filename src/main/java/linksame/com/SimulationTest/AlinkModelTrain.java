@@ -24,18 +24,19 @@ import com.alibaba.alink.pipeline.nlp.StopWordsRemover;
 public class AlinkModelTrain {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("开始构建离线批处理训练执行环境 =========================================================");
+
+        System.out.println("开始准备离线训练配置信息 ==================================================================");
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model.csv";
         // 训练文件路径 = 静态资源路径+文件目录路径
-        String train_path = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
-
+        String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train.txt";
+        // 数据源格式
         String schema = "label int , review string";
 
         // 训练资源
         CsvSourceBatchOp trainSource = new CsvSourceBatchOp()
-                .setFilePath(train_path)
+                .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
                 //.setSchemaStr("label int , review string")
@@ -75,11 +76,11 @@ public class AlinkModelTrain {
         PipelineModel model = pipeline.fit(trainSource);
 
         // 保存训练的模型文件
-        model.save(modelPath);
+        // model.save(modelPath);
         // 覆写训练的模型文件（Alink 1.1.0 前 无该方法，Alink 1.3.0 后有该方法）
-        // model.save(modelPath,true);
+        model.save(modelPath,true);
 
-        System.out.println("离线批处理训练开始执行 ================================================================");
+        System.out.println("离线批处理训练开始执行 ====================================================================");
         BatchOperator.execute();
 
     }
