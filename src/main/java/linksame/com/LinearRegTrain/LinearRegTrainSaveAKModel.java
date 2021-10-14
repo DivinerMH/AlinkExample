@@ -1,7 +1,6 @@
 package linksame.com.LinearRegTrain;
 
 import com.alibaba.alink.operator.batch.BatchOperator;
-import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
 import com.alibaba.alink.operator.batch.sink.CsvSinkBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
@@ -16,13 +15,13 @@ import org.junit.Test;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrainSaveModel {
+public class LinearRegTrainSaveAKModel {
 
     @Test
-    public void LinearRegTrainBatchOpTest() throws Exception {
+    public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel1.csv";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel2.csv";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
@@ -35,7 +34,6 @@ public class LinearRegTrainSaveModel {
                 .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
-                //.setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
 
         System.out.println("数据源配置构建完成 ========================================================================");
@@ -45,18 +43,15 @@ public class LinearRegTrainSaveModel {
 
         // 线性回归算法 初始化
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
-                .setFeatureCols("f0","f1","f2","f3")
-                .setLabelCol("label");
-
-        // 批处理操作( 数据 link 算法)
-        BatchOperator model = trainSource.link(lr);
+                .setFeatureCols("f0", "f1", "f2", "f3")
+                .setLabelCol("label")
+                .linkFrom(trainSource);
 
         // 保存模型：训练模型写入CSV文件【允许重写】
         CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
                 .setFilePath(modelPath)
-                .setOverwriteSink(true);
-
-        model.link(csvSink);
+                .setOverwriteSink(true)
+                .linkFrom(lr);
 
         // 执行批处理
         BatchOperator.execute();

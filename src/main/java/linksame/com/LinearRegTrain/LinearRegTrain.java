@@ -4,7 +4,6 @@ import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
 import com.alibaba.alink.operator.batch.source.MemSourceBatchOp;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.types.Row;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ import java.util.List;
 public class LinearRegTrain {
 
     @Test
-    public void LinearRegTrainModelTrain() throws Exception {
+    public void linearRegTrainModelTrain() throws Exception {
 
         // 构建训练数据
         List<Row> dataSource = Arrays.asList(

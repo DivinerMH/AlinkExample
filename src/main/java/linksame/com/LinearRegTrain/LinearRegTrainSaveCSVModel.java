@@ -15,13 +15,13 @@ import org.junit.Test;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrainSaveModel2 {
+public class LinearRegTrainSaveCSVModel {
 
     @Test
-    public void LinearRegTrainBatchOpTest() throws Exception {
+    public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel2.csv";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel1.csv";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
@@ -34,6 +34,7 @@ public class LinearRegTrainSaveModel2 {
                 .setFilePath(trainPath)
                 .setFieldDelimiter("|")
                 .setSchemaStr(schema)
+                //.setSchemaStr("label int , review string")
                 .setIgnoreFirstLine(true);
 
         System.out.println("数据源配置构建完成 ========================================================================");
@@ -43,15 +44,18 @@ public class LinearRegTrainSaveModel2 {
 
         // 线性回归算法 初始化
         BatchOperator <?> lr = new LinearRegTrainBatchOp()
-                .setFeatureCols("f0", "f1", "f2", "f3")
-                .setLabelCol("label")
-                .linkFrom(trainSource);
+                .setFeatureCols("f0","f1","f2","f3")
+                .setLabelCol("label");
+
+        // 批处理操作( 数据 link 算法)
+        BatchOperator model = trainSource.link(lr);
 
         // 保存模型：训练模型写入CSV文件【允许重写】
         CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
                 .setFilePath(modelPath)
-                .setOverwriteSink(true)
-                .linkFrom(lr);
+                .setOverwriteSink(true);
+
+        model.link(csvSink);
 
         // 执行批处理
         BatchOperator.execute();

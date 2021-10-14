@@ -4,12 +4,7 @@ import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
-import com.alibaba.alink.operator.batch.source.MemSourceBatchOp;
-import org.apache.flink.types.Row;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 测试线性回归三元一次方程
@@ -24,7 +19,7 @@ import java.util.List;
 public class LinearRegTrainReadCSV {
 
     @Test
-    public void LinearRegTrainBatchOpTest() throws Exception {
+    public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel.csv";

@@ -14,10 +14,10 @@ import org.junit.Test;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrainLoadModel2 {
+public class LinearRegTrainLoadCSVModel2 {
 
     @Test
-    public void LinearRegTrainBatchOpTest() throws Exception {
+    public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
         String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel1csv";

@@ -3,8 +3,9 @@ package linksame.com.LinearRegTrain;
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegPredictBatchOp;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
+import com.alibaba.alink.operator.batch.sink.AkSinkBatchOp;
 import com.alibaba.alink.operator.batch.sink.CsvSinkBatchOp;
-import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
+import com.alibaba.alink.operator.batch.source.AkSourceBatchOp;
 import com.alibaba.alink.operator.batch.source.MemSourceBatchOp;
 import org.apache.flink.types.Row;
 import org.junit.Test;
@@ -22,13 +23,13 @@ import java.util.UUID;
  * @Author: menghuan
  * @Date: 2021/10/12 10:36
  */
-public class LinearRegTrain2 {
+public class LinearRegTrain3 {
 
     @Test
     public void linearRegTrainModelTrain() throws Exception {
 
         String trainFilePath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/train/" + UUID.randomUUID().toString() + ".csv";
-        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/" + UUID.randomUUID().toString() + ".csv";
+        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/" + UUID.randomUUID().toString() + ".ak";
 
         // 构建训练数据
         List<Row> dataSource = Arrays.asList(
@@ -41,9 +42,8 @@ public class LinearRegTrain2 {
                 Row.of(1, 2, 1, 9, 19),
                 Row.of(5, 3, 3, 9, 43)
         );
-        // String schema = "f0 int, f1 int, f2 int, f3 int, label int";
+        // 数据格式
         String[] schema = new String[]{"f0", "f1", "f2", "f3", "label"};
-        // String[] schema = new String[]{"f0 int","f1 int","f2 int","f3 int","label int"};
 
         // 数据处理【内存数据】
         // BatchOperator<?> batchData = new MemSourceBatchOp(dataSource, "f0 int, f1 int, label int");
@@ -68,36 +68,32 @@ public class LinearRegTrain2 {
         // 结果集保存至Csv文件
         CsvSinkBatchOp csvSink = new CsvSinkBatchOp()
                 .setFilePath(trainFilePath);
-                // .linkFrom(predictor);
+        // .linkFrom(predictor);
         predictor.link(csvSink);
 
-        // 保存模型
-        CsvSinkBatchOp csvSinkModel = new CsvSinkBatchOp()
+        // 保存模型 至ak文件(模型训练文件)
+        AkSinkBatchOp akSinkModel = new AkSinkBatchOp()
                 .setFilePath(trainModelPath);
-                //.linkFrom(model);
-        model.link(csvSinkModel);
+                // .linkFrom(predictor);
+        model.link(akSinkModel);
 
         // 批处理执行（不加此行代码，当前情景，保存文件步骤会无法执行...）
         BatchOperator.execute();
     }
 
     /**
-     * 提示：CSV 格式保存 模型 ，存在 信息 缺失异常 ， 加载模型时会导致无法加载到完整的模型信息
+     * 提示：ak 格式保存 模型
      * @throws Exception
      */
     @Test
     public void linearRegTrainModelPredictor() throws Exception {
 
         // 模型文件路径
-        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/e2068056-b512-499f-bca7-45d6c6e47157.csv";
-
-        // 格式
-        String schemaStr = "f0 int,f1 int,f2 int,f3 int";
+        String trainModelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/a59e0186-140b-4d96-9b2c-7d335c002a7c.ak";
 
         // 加载模型
-        CsvSourceBatchOp csvSourceModel = new CsvSourceBatchOp()
-                .setFilePath(trainModelPath)
-                .setSchemaStr(schemaStr);
+        AkSourceBatchOp akSourceModel = new AkSourceBatchOp()
+                .setFilePath(trainModelPath);
 
         // 测试数据
         List<Row> dataSource = Arrays.asList(
@@ -112,7 +108,7 @@ public class LinearRegTrain2 {
                 .setPredictionCol("pred");
 
         // 预测
-        BatchOperator<?> resultOp = predictor.linkFrom(csvSourceModel, batchSource);
+        BatchOperator<?> resultOp = predictor.linkFrom(akSourceModel, batchSource);
 
         // 预测结果 打印
         resultOp.print();

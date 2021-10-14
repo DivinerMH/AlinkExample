@@ -1,6 +1,5 @@
 package linksame.com.SimulationTest;
 
-import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import com.alibaba.alink.pipeline.PipelineModel;
 
