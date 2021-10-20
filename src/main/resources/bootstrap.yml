@@ -1,0 +1,32 @@
+server:
+  port: 2002
+
+# 数据源
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: ${MYSQL-USER:root}
+      password: ${MYSQL-PWD:123456}
+      url: jdbc:mysql://${MYSQL-HOST:iot-mysql}:${MYSQL-PORT:3306}/${MYSQL-DB:iot_ai_model}?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 10000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+
+# 文件系统 (提供测试环境，不要乱传)
+minio:
+  url: http://minio:9000
+  access-key: linksame
+  secret-key: linksame

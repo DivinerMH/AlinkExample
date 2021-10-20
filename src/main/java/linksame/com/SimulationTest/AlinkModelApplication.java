@@ -18,7 +18,7 @@ public class AlinkModelApplication {
         // 加载模型文件
         PipelineModel model = PipelineModel.load(modelPath);
 
-        // 预测文件路径
+        // 预测数据源文件路径
         String predictorPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/train3.txt";
         // 预测数据 初始化
         CsvSourceBatchOp predictorResource = new CsvSourceBatchOp()
