@@ -3,6 +3,7 @@ package linksame.com.LinearRegTrain;
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.regression.LinearRegTrainBatchOp;
 import com.alibaba.alink.operator.batch.sink.AkSinkBatchOp;
+import com.alibaba.alink.operator.batch.source.AkSourceBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import org.junit.Test;
 
@@ -21,10 +22,11 @@ public class LinearRegTrainSaveAKModel {
     public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel.ak";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel2.ak";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
+        // String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrainAKModel2.ak";
 
         // 格式
         String schema = "f0 int,f1 int,f2 int,f3 int,label int";
@@ -55,6 +57,17 @@ public class LinearRegTrainSaveAKModel {
 
         // 执行批处理
         BatchOperator.execute();
+    }
+
+    /**
+     * 加载 | 预览 AK 模型文件
+     * @throws Exception
+     */
+    @Test
+    public void previewAKModel() throws Exception {
+        String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel2.ak";
+        AkSourceBatchOp akSourceBatchOp = new AkSourceBatchOp().setFilePath(trainPath);
+        akSourceBatchOp.print();
     }
 
 }

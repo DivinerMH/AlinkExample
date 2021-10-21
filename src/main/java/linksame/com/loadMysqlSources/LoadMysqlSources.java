@@ -1,7 +1,6 @@
 package linksame.com.loadMysqlSources;
 
 import com.alibaba.alink.common.AlinkGlobalConfiguration;
-import com.alibaba.alink.common.io.catalog.MySqlCatalog;
 import org.junit.Test;
 
 /**
