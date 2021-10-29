@@ -2,7 +2,26 @@ HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
+###### IntelliJ IDEA ######
+.idea
+/.idea/
+/src/test/
+*.iws
+*.iml
+*.ipr
+*.class
+target
+test
+*.csv
+*.ak
+#!/*resources/*.csv
+#!/*resources/*/*.csv
+!/src/main/resources/*.ak
+!/src/main/resources/*/*.ak
+!/src/main/resources/*.csv
+!/src/main/resources/*/*.csv
+
+###### STS ######
 .apt_generated
 .classpath
 .factorypath
@@ -10,30 +29,13 @@ HELP.md
 .settings
 .springBeans
 .sts4-cache
-.idea
-*.class
-*.iml
-target
-test
-*.csv
-*.ak
-!/resources/model/*.csv
-!/resources/model/*.ak
+#.idea
+#*.class
+#*.iml
+#target
+#test
 
-### IntelliJ IDEA ###
-.idea
-/.idea/
-/src/test/
-*.iws
-*.iml
-*.ipr
-.idea
-*.class
-*.iml
-target
-test
-
-### NetBeans ###
+###### NetBeans ######
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -41,10 +43,10 @@ test
 /.nb-gradle/
 /build/
 
-### VS Code ###
+###### VS Code ######
 .vscode/
-*.properties
+#*.properties
 .log
-target
-test
+#target
+#test
 *.log
