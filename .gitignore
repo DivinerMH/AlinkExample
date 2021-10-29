@@ -17,6 +17,8 @@ target
 test
 *.csv
 *.ak
+!/resources/*.csv
+!/resources/*.ak
 
 ### IntelliJ IDEA ###
 .idea

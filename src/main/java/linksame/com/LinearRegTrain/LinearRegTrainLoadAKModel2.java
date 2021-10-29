@@ -82,9 +82,6 @@ public class LinearRegTrainLoadAKModel2 {
                 .linkFrom(result);
         op.print();*/
 
-
-
-
     }
 
 }
