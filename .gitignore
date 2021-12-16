@@ -18,6 +18,8 @@ target
 test
 *.csv
 *.ak
+model
+resources/model/
 #!/*resources/*.csv
 #!/*resources/*/*.csv
 !/src/main/resources/*.ak
