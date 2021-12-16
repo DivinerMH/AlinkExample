@@ -1,3 +1,7 @@
+# 注意：从未提交过的文件可以用 .gitignore 管理，已在git存在记录的，.gitignore 无法管理
+# 注意：git 对于 .gitignore 配置文件是按行从上到下进行规则匹配的
+# 注意：跟踪忽略文件夹中文件 ( 先忽略后追踪 )
+
 HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar

@@ -25,7 +25,7 @@ public class LinearRegTrainLoadAKModel2 {
     public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel2.ak";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/LinearRegTrainAKModel.ak";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath_2 = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain3.txt";

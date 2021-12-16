@@ -22,7 +22,7 @@ public class LinearRegTrainSaveAKModel {
     public void linearRegTrainBatchOpTest() throws Exception {
 
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainAKModel2.ak";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/LinearRegTrainAKModel.ak";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
@@ -49,7 +49,7 @@ public class LinearRegTrainSaveAKModel {
                 .setLabelCol("label")
                 .linkFrom(trainSource);
 
-        // 保存模型：训练模型写入CSV文件【允许重写】
+        // 保存模型：训练模型写入ak文件【允许重写】
         AkSinkBatchOp akSinkBatchOp = new AkSinkBatchOp()
                 .setFilePath(modelPath)
                 .setOverwriteSink(true)

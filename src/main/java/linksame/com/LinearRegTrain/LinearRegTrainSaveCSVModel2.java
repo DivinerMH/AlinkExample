@@ -20,8 +20,9 @@ public class LinearRegTrainSaveCSVModel2 {
     @Test
     public void linearRegTrainBatchOpTest() throws Exception {
 
+        /* --------------- 警告：模型文件以 csv 格式存储，加载会出现异常，请用 ak 格式存储 --------------- */
         // 模型文件路径
-        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/LinearRegTrainModel2.csv";
+        String modelPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/model/LinearRegTrainModel2.csv";
 
         // 训练文件路径 = 静态资源路径+文件目录路径
         String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/static/LinearRegTrain.txt";
