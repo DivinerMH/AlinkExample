@@ -24,7 +24,7 @@ import org.junit.Test;
 public class FTRLExample {
 
     // 训练文件路径 = 静态资源路径+文件目录路径
-    private static final String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/avazu-small.csv";
+    private static final String trainPath = "G:/Idea-Workspaces/AlinkExample/src/main/resources/train/avazu-small.csv";
 
     // 该管道模型可以作用在批式数据，也可以应用在流式数据，生成特征向量。我们先把这个特征工程处理模型保存到本地，设置文件路径
     // fit and save feature pipeline model
