@@ -67,8 +67,8 @@ public class FTRLTrainOnlineAndExceple {
 
         // 定义 schema 后，可以通过 CsvSourceBatchOp 读取显示数据
         CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
-                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.txt")
-                .setFieldDelimiter("|")
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.csv")
+                // .setFieldDelimiter("|")
                 .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
                 .setIgnoreFirstLine(true);
 
@@ -81,18 +81,20 @@ public class FTRLTrainOnlineAndExceple {
 
         // 批式原始训练数据
         CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
-                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.txt")
-                .setFieldDelimiter("|")
-                .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.csv")
+                // .setFieldDelimiter("|")
+                .setSchemaStr("f0 double,f1 double,f2 double,f3 double,label double")
                 .setIgnoreFirstLine(true);
+
+        // 打印前10条数据
+        trainBatchData.firstN(10).print();
 
         // 定义 特征工程 处理 pipeline(管道)
         Pipeline featurePipeline = new Pipeline()
-                .add(
+                /*.add(
                         // 标准缩放 ( 数值特征标准化 )
-                        new StandardScaler()
-                                .setSelectedCols("f0", "f1", "f2", "f3", "label")
-                )
+                        // new StandardScaler().setSelectedCols("f0", "f1", "f2", "f3", "label")
+                )*/
                 .add(
                         // 特征哈希 ( 将多个特征组合成一个特征向量 )
                         new FeatureHasher()
@@ -105,19 +107,22 @@ public class FTRLTrainOnlineAndExceple {
         // 构建特征工程流水线 - 对批式训练数据 trainBatchData 执行 fit 方法，及进行训练，得到 PipelineModel(管道模型)
 
         // 初始模型允许覆盖重写
-        featurePipeline.fit(trainBatchData).save(initModelPath,true);
+        featurePipeline.fit(trainBatchData)
+                .save("G:/Idea-Workspaces/AlinkExample/src/main/resources/model/pipelineModel.ak",true);
 
         // 批处理执行
         BatchOperator.execute();
+
+        System.out.println("保存：可以作用在批式数据，也可以应用在流式数据，生成特征向量的 管道模型-PipelineModel");
 
         /* ------------------------------------------------------------------------------------- */
 
         // 准备流式训练数据
         CsvSourceStreamOp data = new CsvSourceStreamOp()
                 //.setFilePath("http://alink-release.oss-cn-beijing.aliyuncs.com/data-files/avazu-ctr-train-8M.csv")
-                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLOnlineTrain.txt")
-                .setFieldDelimiter("|")
-                .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLOnlineTrain.csv")
+                // .setFieldDelimiter("|")
+                .setSchemaStr("f0 double,f1 double,f2 double,f3 double,label double")
                 .setIgnoreFirstLine(true);
 
         // 定义一个流式数据源，并按1:1的比例实时切分数据，从而得到 : 流式原始训练数据、流式原始预测数据
@@ -130,8 +135,9 @@ public class FTRLTrainOnlineAndExceple {
         // 流式原始预测数据
         StreamOperator<?> testStreamData = split.getSideOutput(0);
 
+
         // 通过PipelineModel.load()方法，可以载入前面保存的特征工程处理模型
-        PipelineModel featurePipelineModel = PipelineModel.load(initModelPath);
+        PipelineModel featurePipelineModel = PipelineModel.load("G:/Idea-Workspaces/AlinkExample/src/main/resources/model/FTRLLinearRegTrainModel.ak");
 
         /* ------------ 分别利用模型生成批式训练数据，流式训练数据，流式测试数据--------------------- */
 
@@ -173,7 +179,7 @@ public class FTRLTrainOnlineAndExceple {
         predResult.sample(0.0001).print();*/
 
         // 对于流式的任务，print()方法不能触发流式任务的执行，必须调用StreamOperator.execute()方法，才能开始执行
-        // StreamOperator.execute();
+        StreamOperator.execute();
     }
 
 }

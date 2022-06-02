@@ -1,11 +1,13 @@
 package linksame.com.Ftrl;
 
+import com.alibaba.alink.common.AlinkGlobalConfiguration;
 import com.alibaba.alink.operator.batch.BatchOperator;
 import com.alibaba.alink.operator.batch.classification.LogisticRegressionTrainBatchOp;
 import com.alibaba.alink.operator.batch.source.CsvSourceBatchOp;
 import com.alibaba.alink.operator.batch.source.RandomTableSourceBatchOp;
 import com.alibaba.alink.operator.batch.source.TextSourceBatchOp;
 import com.alibaba.alink.operator.stream.StreamOperator;
+import com.alibaba.alink.operator.stream.dataproc.JsonValueStreamOp;
 import com.alibaba.alink.operator.stream.onlinelearning.FtrlPredictStreamOp;
 import com.alibaba.alink.operator.stream.onlinelearning.FtrlTrainStreamOp;
 import com.alibaba.alink.operator.stream.source.CsvSourceStreamOp;
@@ -64,13 +66,26 @@ public class FTRLOnlineTrainSecond {
     @Test
     public void loadInitData() throws Exception {
         // 定义 schema 后，可以通过 CsvSourceBatchOp 读取显示数据
-        CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
+        /*CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
                 .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.txt")
                 .setFieldDelimiter("|")
                 .setSchemaStr("f0 string,f1 string,f2 string,f3 string,label string")
-                .setIgnoreFirstLine(false);
+                .setIgnoreFirstLine(false);*/
+
+        // 批式原始训练数据
+        BatchOperator<?> trainBatchData = new CsvSourceBatchOp()
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.csv")
+                .setFieldDelimiter(",")         // 字段分隔符
+                // .setFieldDelimiter("|")
+                // .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
+                .setSchemaStr("f0 double,f1 double,f2 double,f3 double,label double")
+                .setIgnoreFirstLine(true)       // 忽略第一行
+                .setLenient(true);              // 开启容错
+
         // 打印前10条数据
         trainBatchData.firstN(5).print();
+
+
     }
 
     @Test
@@ -116,69 +131,100 @@ public class FTRLOnlineTrainSecond {
     @Test
     public void fTRLInitModel() throws Exception {
 
+        AlinkGlobalConfiguration.setPluginDir("G:/Idea-Workspaces/AlinkPlugIn");
+
+        // 设置并行度
         StreamOperator.setParallelism(2);
 
         // 批式原始训练数据
-        BatchOperator<?> batchData = new CsvSourceBatchOp()
-                .setFilePath(initTrainPath)
-                .setFieldDelimiter("|")         // 字段分隔符
-                .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
-                .setIgnoreFirstLine(true)       // 忽略第一行
-                .setLenient(true);              // 开启容错
-        // trainBatchData.print();
+        BatchOperator<?> trainBatchData = new CsvSourceBatchOp()
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.csv")
+                // .setFieldDelimiter("|")         // 字段分隔符
+                // .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
+                .setSchemaStr("f0 double,f1 double,f2 double,f3 double,label double")
+                //.setLenient(true)                 // 开启容错
+                .setIgnoreFirstLine(true);               // 忽略第一行
+        // 打印前10条数据
+        // trainBatchData.firstN(5).print();
 
-        BatchOperator<?> batchData2 = new RandomTableSourceBatchOp()
+        // 生成测试数据，该数据符合高斯分布
+        /*BatchOperator<?> trainBatchData = new RandomTableSourceBatchOp()
                 .setNumCols(5)          // 随机构建数据的列数
                 .setNumRows(20L)        // 随机构建数据的max行数
                 .setOutputCols(new String[]{"f0", "f1", "f2", "f3", "label"})
-                .setOutputColConfs("label:weight_set(1.0,1.0,2.0,5.0)");
+                .setOutputColConfs("label:weight_set(1.0,1.0,2.0,5.0)");*/
 
         LogisticRegressionTrainBatchOp model = new LogisticRegressionTrainBatchOp()
                 .setFeatureCols(new String[]{"f0", "f1", "f2", "f3"})
-                .setWithIntercept(true)         // 是否有常数项
+                // .setFeatureCols("f0", "f1", "f2", "f3")
+                // .setWithIntercept(true)         // 是否有常数项
                 .setLabelCol("label")           // 标签列名
                 .setMaxIter(10)                 // 最大迭代步数
-                .linkFrom(batchData);
-
-        StreamOperator.execute();
+                .linkFrom(trainBatchData);
 
         // 准备流式训练数据
-        /*StreamOperator<?> streamData = new CsvSourceStreamOp()
-                .setFilePath(onlineTrainAllPath)
-                .setFieldDelimiter("|")
-                .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
-                .setIgnoreFirstLine(true);*/
+        StreamOperator<?> streamData = new CsvSourceStreamOp()
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/static/FTRLInitTrain.csv")
+                // .setFieldDelimiter("|")      // 分隔符
+                // .setSchemaStr("f0 int,f1 int,f2 int,f3 int,label int")
+                .setSchemaStr("f0 double, f1 double, f2 double, f3 double, label double")
+                .setIgnoreFirstLine(true);
 
-        StreamOperator<?> streamData = new RandomTableSourceStreamOp()
+        /*System.out.println("流式预测数据...");
+        streamData.print();
+        StreamOperator.execute();*/
+
+        /*StreamOperator<?> streamData = new RandomTableSourceStreamOp()
                 .setNumCols(5)
                 .setMaxRows(100L)
                 .setOutputCols(new String[]{"f0", "f1", "f2", "f3", "label"})
                 .setOutputColConfs("label:weight_set(1.0,1.0,2.0,5.0)")
-                .setTimePerSample(0.1);
+                .setTimePerSample(0.1);*/
+
+        StreamOperator data = streamData.link(
+                new JsonValueStreamOp()
+                        .setJsonPath("$.f0", "$.f1", "$.f2", "$.f3", "$.label")
+                        .setSelectedCol("label")
+                        .setSkipFailed(true)
+                        .setReservedCols(new String[]{})
+                        .setOutputCols(new String[]{"f0", "f1", "f2", "f3", "label"})
+        )
+                .select("CAST(f0 AS DOUBLE) AS f0, "
+                        + "CAST(f1 AS DOUBLE) AS f1, "
+                        + "CAST(f2 AS DOUBLE) AS f2, "
+                        + "CAST(f3 AS DOUBLE) AS f3, label");
+        StreamOperator.execute();
 
         // streamData.print();
 
         // StreamOperator<?> sModel = new FtrlTrainStreamOp(model)
-        FtrlTrainStreamOp sModel = new FtrlTrainStreamOp(model)
-                .setFeatureCols(new String[]{"f0", "f1", "f2", "f3","label"})   // 特征向量名
-                .setLabelCol("label")       // 标签列名
-                .setWithIntercept(true)     // 有常数项
-                .setAlpha(0.1)              // 参数α的值
-                .setBeta(0.1)               // 参数β的值
-                .setL1(0.1)                 // L1 正则化系数
-                .setL2(0.1)                 // L2 正则化系数
-                .setTimeInterval(10)        // 数据流流动过程中时间的间隔（窗口大小）
-                .setVectorSize(4)           // 向量长度
-                .linkFrom(streamData);      // 模型 连接 流式向量训练数据
+        try{
+            FtrlTrainStreamOp sModel = new FtrlTrainStreamOp(model)
+                    // .setFeatureCols(new String[]{"f0", "f1", "f2", "f3","label"})   // 特征向量名
+                    .setFeatureCols("f0", "f1", "f2", "f3")
+                    .setLabelCol("label")       // 标签列名
+                    .setWithIntercept(true)     // 有常数项
+                    .setAlpha(0.1)              // 参数α的值
+                    .setBeta(0.1)               // 参数β的值
+                    .setL1(0.1)                 // L1 正则化系数
+                    .setL2(0.1)                 // L2 正则化系数
+                    .setTimeInterval(10)        // 数据流流动过程中时间的间隔（窗口大小）
+                    .setVectorSize(4)           // 向量长度
+                    .linkFrom(data);      // 模型 连接 流式向量训练数据
 
-        new FtrlPredictStreamOp(model)
-                .setPredictionCol("pred")
-                .setReservedCols(new String[]{"label"})
-                .setPredictionDetailCol("details")
-                .linkFrom(sModel, streamData)
-                .print();
+            new FtrlPredictStreamOp(model)
+                    .setPredictionCol("pred")
+                    .setReservedCols(new String[]{"label"})
+                    .setPredictionDetailCol("details")
+                    .linkFrom(sModel, streamData)
+                    .print();
 
-        StreamOperator.execute();
+            StreamOperator.execute();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 }

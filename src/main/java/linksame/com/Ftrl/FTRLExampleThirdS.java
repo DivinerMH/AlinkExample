@@ -74,7 +74,7 @@ public class FTRLExampleThirdS {
 
         // 批式原始训练数据
         CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
-                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/avazu-small.csv")
+                .setFilePath("G:/Idea-Workspaces/AlinkExample/src/main/resources/train/avazu-small.csv")
                 .setSchemaStr("id string, click string, dt string, C1 string, banner_pos int, site_id string, site_domain string, "
                         + "site_category string, app_id string, app_domain string, app_category string, device_id string, "
                         + "device_ip string, device_model string, device_type string, device_conn_type string, C14 int, C15 int, "

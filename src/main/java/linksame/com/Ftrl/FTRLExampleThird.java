@@ -71,7 +71,7 @@ public class FTRLExampleThird {
     private static final int numHashFeatures = 30000;
 
     @Test
-    public void testRemoteData4() throws Exception {
+    public void fTRLExampleThird() throws Exception {
 
         // 批式原始训练数据
         CsvSourceBatchOp trainBatchData = new CsvSourceBatchOp()
@@ -191,5 +191,6 @@ public class FTRLExampleThird {
         StreamOperator.execute();*/
 
     }
+
 
 }
